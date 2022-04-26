@@ -1,16 +1,9 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React from 'react';
-import Screen from './Views/screen';
+import MainStack from './Navigator/MainStack';
+import 'react-native-gesture-handler';
 
 function App() {
-  return <Screen />;
+  return <MainStack />;
 }
 
 export default App;
