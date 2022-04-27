@@ -72,41 +72,50 @@ const MenuScreen = ({navigation}) => {
     const searchPicture = async () => {
       const formData = new FormData();
       if (resultado !== null) {
-        formData.append('file', {
-          uri: resultado.assets[0].uri,
-          type: resultado.assets[0].type,
-          name: resultado.assets[0].fileName,
-        });
-        const options = {
-          headers: {
-            Nomada: 'ZDk3ZjYxZWMtNmJjZi00ZGI5LWI1ODctNDYwNWY1NzRhMGMz',
-            'content-type': 'multipart/form-data',
-          },
-        };
-        try {
-          const {data} = await axios.post(
-            'https://whois.nomada.cloud/upload',
-            formData,
-            options,
-          );
-          if (data.actorName !== '') {
-            findMovies(data.actorName);
-          } else if (data.error == 'No sé quien es, intenta con otra foto') {
-            setState('¿Es un famoso?');
-            setResponse('No se encontró');
-          } else {
+        if (
+          resultado.assets[0].type === 'image/png' ||
+          resultado.assets[0].type === 'image/jpeg'
+        ) {
+          formData.append('file', {
+            uri: resultado.assets[0].uri,
+            type: resultado.assets[0].type,
+            name: resultado.assets[0].fileName,
+          });
+          const options = {
+            headers: {
+              Nomada: 'ZDk3ZjYxZWMtNmJjZi00ZGI5LWI1ODctNDYwNWY1NzRhMGMz',
+              'content-type': 'multipart/form-data',
+            },
+          };
+          try {
+            const {data} = await axios.post(
+              'https://whois.nomada.cloud/upload',
+              formData,
+              options,
+            );
+            if (data.actorName !== '') {
+              findMovies(data.actorName);
+            } else if (data.error === 'No sé quien es, intenta con otra foto') {
+              setState('¿Es un famoso?');
+              setResponse('No se encontró');
+            } else {
+              setState('Hubo un error');
+              setResponse('Error de red o de servidor');
+            }
+          } catch (error) {
             setState('Hubo un error');
             setResponse('Error de red o de servidor');
           }
-        } catch (error) {
-          console.log(error);
         }
       }
     };
     const findMovies = name => {
       setState('Listo');
       setResponse(name);
-      navigation.navigate('Actor');
+      navigation.navigate('Actor', {uri: resultado.assets[0].uri, name});
+      setViewPicture(false);
+      setResponse('Buscando...');
+      setState('Subiendo...');
     };
     searchPicture();
   }, [navigation, resultado]);
@@ -169,17 +178,17 @@ const MenuScreen = ({navigation}) => {
               {state === '¿Es un famoso?' ||
               state === 'Hubo un error' ||
               state === 'Listo' ? (
-                <View></View>
+                <View />
               ) : (
                 textSearch
               )}
-              {state === 'Listo' ? textFind : <View></View>}
-              {state === '¿Es un famoso?' ? textNotFind : <View></View>}
-              {state === 'Hubo un error' ? textError : <View></View>}
+              {state === 'Listo' ? textFind : <View />}
+              {state === '¿Es un famoso?' ? textNotFind : <View />}
+              {state === 'Hubo un error' ? textError : <View />}
             </View>
             {/* El boton solo aparecera una vez se hayan cargaod los elementos */}
-            {state === '¿Es un famoso?' ? ButtonPersonal : <View></View>}
-            {state === 'Hubo un error' ? ButtonPersonal : <View></View>}
+            {state === '¿Es un famoso?' ? ButtonPersonal : <View />}
+            {state === 'Hubo un error' ? ButtonPersonal : <View />}
           </View>
         </View>
       </Modal>
