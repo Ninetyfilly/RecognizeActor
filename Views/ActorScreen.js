@@ -13,7 +13,7 @@ import {Button} from 'react-native-paper';
 import axios from 'axios';
 
 const ActorScreen = ({route, navigation}) => {
-  const [sex, setSex] = React.useState('Hombre');
+  const [sex, setSex] = React.useState('');
   const [result, setResult] = React.useState(null);
   const [movies, setMovies] = React.useState('');
   const [ready, setReady] = React.useState(false);
@@ -53,6 +53,11 @@ const ActorScreen = ({route, navigation}) => {
         setPopularityStar(result.results[0].popularity);
         setMovies(findData);
         setReady(true);
+        if (result.results[0].gender === 1) {
+          setSex('Mujer');
+        } else {
+          setSex('Hombre');
+        }
       }
     };
     searchData();
@@ -95,6 +100,7 @@ const ActorScreen = ({route, navigation}) => {
           <TouchableOpacity
             onPress={() => {
               navigation.goBack();
+              setSex('');
             }}>
             <Button icon="arrow-left" color="black" style={styles.row} />
           </TouchableOpacity>
