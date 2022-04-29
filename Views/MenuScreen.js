@@ -57,7 +57,6 @@ const MenuScreen = ({navigation}) => {
       } else {
         const result = await launchImageLibrary(options);
         const images = result.assets.map(item => item.uri);
-        console.log(result);
         setImageModal(images[0]);
         setResultado(result);
       }
@@ -69,50 +68,97 @@ const MenuScreen = ({navigation}) => {
   };
 
   React.useEffect(() => {
-    const searchPicture = async () => {
+    const loadDataGalery = async () => {
       const formData = new FormData();
-      if (resultado !== null) {
-        if (
-          resultado.assets[0].type === 'image/png' ||
-          resultado.assets[0].type === 'image/jpeg'
-        ) {
-          formData.append('file', {
-            uri: resultado.assets[0].uri,
-            type: resultado.assets[0].type,
-            name: resultado.assets[0].fileName,
-          });
-          const options = {
-            headers: {
-              Nomada: 'ZDk3ZjYxZWMtNmJjZi00ZGI5LWI1ODctNDYwNWY1NzRhMGMz',
-              'content-type': 'multipart/form-data',
-            },
-          };
-          try {
-            const {data} = await axios.post(
-              'https://whois.nomada.cloud/upload',
-              formData,
-              options,
-            );
-            if (data.actorName !== '') {
-              findMovies(data.actorName);
-            } else if (data.error === 'No sé quien es, intenta con otra foto') {
-              setState('¿Es un famoso?');
-              setResponse('No se encontró');
-            } else {
-              setState('Hubo un error');
-              setResponse('Error de red o de servidor');
-            }
-          } catch (error) {
-            setState('Hubo un error');
-            setResponse('Error de red o de servidor');
+      if (
+        resultado.assets[0].type === 'image/png' ||
+        resultado.assets[0].type === 'image/jpeg'
+      ) {
+        formData.append('file', {
+          uri: resultado.assets[0].uri,
+          type: resultado.assets[0].type,
+          name: resultado.assets[0].fileName,
+        });
+        const options = {
+          headers: {
+            Nomada: 'ZDk3ZjYxZWMtNmJjZi00ZGI5LWI1ODctNDYwNWY1NzRhMGMz',
+            'content-type': 'multipart/form-data',
+          },
+        };
+        try {
+          const {data} = await axios.post(
+            'https://whois.nomada.cloud/upload',
+            formData,
+            options,
+          );
+          if (data.actorName !== '') {
+            findMovies(data.actorName);
+          } else if (data.error === 'No sé quien es, intenta con otra foto') {
+            setState('¿Es un famoso?');
+            setResponse('No se encontró');
           }
+        } catch (error) {
+          console.log(error);
+          setState('Hubo un error');
+          setResponse('Error de red o de servidor');
+        }
+      }
+    };
+
+    const loadDataPicture = async () => {
+      const formData = new FormData();
+      if (
+        resultado[0].type === 'image/png' ||
+        resultado[0].type === 'image/jpeg'
+      ) {
+        formData.append('file', {
+          uri: resultado[0].uri,
+          type: resultado[0].type,
+          name: resultado[0].fileName,
+        });
+        const options = {
+          headers: {
+            Nomada: 'ZDk3ZjYxZWMtNmJjZi00ZGI5LWI1ODctNDYwNWY1NzRhMGMz',
+            'content-type': 'multipart/form-data',
+          },
+        };
+        try {
+          const {data} = await axios.post(
+            'https://whois.nomada.cloud/upload',
+            formData,
+            options,
+          );
+          if (data.actorName !== '') {
+            findMovies(data.actorName);
+          } else if (data.error === 'No sé quien es, intenta con otra foto') {
+            setState('¿Es un famoso?');
+            setResponse('No se encontró');
+          }
+        } catch (error) {
+          console.log('error Camara: ', error);
+          setState('Hubo un error');
+          setResponse('Error de red o de servidor');
+        }
+      }
+    };
+
+    const searchPicture = async () => {
+      if (resultado !== null) {
+        if (resultado.assets !== undefined) {
+          loadDataGalery();
+        } else {
+          loadDataPicture();
         }
       }
     };
     const findMovies = name => {
       setState('Listo');
       setResponse(name);
-      navigation.navigate('Actor', {uri: resultado.assets[0].uri, name});
+      if (resultado.assets !== undefined) {
+        navigation.navigate('Actor', {uri: resultado.assets[0].uri, name});
+      } else {
+        navigation.navigate('Actor', {uri: resultado[0].uri, name});
+      }
       setViewPicture(false);
       setResponse('Buscando...');
       setState('Subiendo...');
@@ -133,11 +179,7 @@ const MenuScreen = ({navigation}) => {
         <Image source={image} />
       </TouchableOpacity>
       {/* Modal de seleecion de foto */}
-      <Modal
-        animationType="slide"
-        // onShow={() => console.log('show')}
-        transparent={true}
-        visible={viewGeneral}>
+      <Modal animationType="slide" transparent={true} visible={viewGeneral}>
         <View style={styles.modalGeneral}>
           <View style={styles.modalSelect}>
             <Text style={styles.textSelect}>selecciona una foto</Text>
@@ -146,8 +188,12 @@ const MenuScreen = ({navigation}) => {
                 onPress={() => {
                   choicePicture(undefined);
                 }}
-                styles={styles.textSelection}>
-                <Button icon="image-outline" color="black">
+                // styles={styles.textSelection}
+              >
+                <Button
+                  icon="image-outline"
+                  color="black"
+                  style={styles.iconPicture}>
                   Galeria de fotos
                 </Button>
               </TouchableOpacity>
@@ -155,8 +201,9 @@ const MenuScreen = ({navigation}) => {
                 onPress={() => {
                   choicePicture('camera');
                 }}
-                styles={styles.textSelection}>
-                <Button icon="camera-outline" color="black">
+                // styles={styles.textSelection}
+              >
+                <Button icon="camera-outline" color="black" style={styles.icon}>
                   Cámara
                 </Button>
               </TouchableOpacity>
@@ -197,6 +244,15 @@ const MenuScreen = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  iconPicture: {
+    transform: [{scale: 1.5}],
+    marginLeft: 52,
+    marginBottom: 10,
+  },
+  icon: {
+    transform: [{scale: 1.5}],
+    marginLeft: 35,
+  },
   image: {
     width: 175,
     height: 211,
@@ -303,17 +359,14 @@ const styles = StyleSheet.create({
   modalOptions: {
     backgroundColor: '#ffffff',
     alignItems: 'flex-start',
+    marginBottom: 25,
   },
   textSelect: {
     alignSelf: 'center',
     marginBottom: 20,
     marginTop: 25,
-    color: '#000000',
-  },
-  textSelection: {
-    alignItems: 'flex-start',
-    marginBottom: 10,
-    marginLeft: 25,
+    color: '#64748B',
+    fontSize: 20,
   },
 });
 
