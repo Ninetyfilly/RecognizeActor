@@ -1,16 +1,10 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Modal,
-} from 'react-native';
+import {View, Text, TouchableOpacity, Image, Modal} from 'react-native';
 import image from '../assets/CapturaDePantalla.png';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {Button} from 'react-native-paper';
 import axios from 'axios';
+import styles from '../Styles/MenuStyles';
 
 const MenuScreen = ({navigation}) => {
   const [viewGeneral, setViewGeneral] = React.useState(false);
@@ -92,7 +86,11 @@ const MenuScreen = ({navigation}) => {
             options,
           );
           if (data.actorName !== '') {
-            findMovies(data.actorName);
+            setState('Listo');
+            setResponse(data.actorName);
+            setTimeout(() => {
+              findMovies(data.actorName);
+            }, 2000);
           } else if (data.error === 'No sé quien es, intenta con otra foto') {
             setState('¿Es un famoso?');
             setResponse('No se encontró');
@@ -129,7 +127,11 @@ const MenuScreen = ({navigation}) => {
             options,
           );
           if (data.actorName !== '') {
-            findMovies(data.actorName);
+            setState('Listo');
+            setResponse(data.actorName);
+            setTimeout(() => {
+              findMovies(data.actorName);
+            }, 2000);
           } else if (data.error === 'No sé quien es, intenta con otra foto') {
             setState('¿Es un famoso?');
             setResponse('No se encontró');
@@ -142,18 +144,7 @@ const MenuScreen = ({navigation}) => {
       }
     };
 
-    const searchPicture = async () => {
-      if (resultado !== null) {
-        if (resultado.assets !== undefined) {
-          loadDataGalery();
-        } else {
-          loadDataPicture();
-        }
-      }
-    };
     const findMovies = name => {
-      setState('Listo');
-      setResponse(name);
       if (resultado.assets !== undefined) {
         navigation.navigate('Actor', {uri: resultado.assets[0].uri, name});
       } else {
@@ -162,6 +153,16 @@ const MenuScreen = ({navigation}) => {
       setViewPicture(false);
       setResponse('Buscando...');
       setState('Subiendo...');
+    };
+
+    const searchPicture = async () => {
+      if (resultado !== null) {
+        if (resultado.assets !== undefined) {
+          loadDataGalery();
+        } else {
+          loadDataPicture();
+        }
+      }
     };
     searchPicture();
   }, [navigation, resultado]);
@@ -200,9 +201,7 @@ const MenuScreen = ({navigation}) => {
               <TouchableOpacity
                 onPress={() => {
                   choicePicture('camera');
-                }}
-                // styles={styles.textSelection}
-              >
+                }}>
                 <Button icon="camera-outline" color="black" style={styles.icon}>
                   Cámara
                 </Button>
@@ -242,132 +241,5 @@ const MenuScreen = ({navigation}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  iconPicture: {
-    transform: [{scale: 1.5}],
-    marginLeft: 52,
-    marginBottom: 10,
-  },
-  icon: {
-    transform: [{scale: 1.5}],
-    marginLeft: 35,
-  },
-  image: {
-    width: 175,
-    height: 211,
-    alignSelf: 'center',
-    borderRadius: 36,
-    marginBottom: 20,
-  },
-  textButton: {
-    color: '#ffffff',
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
-    fontSize: 16,
-    backgroundColor: '#3843D0',
-    borderRadius: 16,
-    padding: 35,
-    paddingVertical: 20,
-    paddingHorizontal: '40%',
-    alignSelf: 'center',
-    marginTop: 15,
-  },
-  textSearch: {
-    color: '#ffffff',
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
-    fontSize: 16,
-    backgroundColor: '#3843D0',
-    borderRadius: 16,
-    padding: 20,
-    paddingVertical: 8,
-    alignSelf: 'center',
-  },
-  textFind: {
-    color: '#ffffff',
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
-    fontSize: 16,
-    backgroundColor: '#4ADE80',
-    borderRadius: 16,
-    padding: 25,
-    paddingVertical: 8,
-    alignSelf: 'center',
-  },
-  textNotFind: {
-    color: '#000000',
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
-    fontSize: 16,
-    backgroundColor: '#FDE047',
-    borderRadius: 16,
-    padding: 25,
-    paddingVertical: 8,
-    alignSelf: 'center',
-  },
-  textError: {
-    color: '#ffffff',
-    fontFamily: 'Roboto',
-    fontWeight: 'bold',
-    fontSize: 16,
-    backgroundColor: '#F75555',
-    borderRadius: 16,
-    padding: 25,
-    paddingVertical: 8,
-    alignSelf: 'center',
-  },
-  viewSearch: {},
-  viewGeneral: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: 'white',
-  },
-  textHey: {
-    fontFamily: 'Roboto',
-    fontSize: 24,
-    color: '#0F172A',
-    fontWeight: 'bold',
-  },
-  textWork: {
-    fontFamily: 'Roboto',
-    fontSize: 16,
-    color: '#475569',
-    marginBottom: 25,
-  },
-  textQuestion: {
-    fontFamily: 'Roboto',
-    fontSize: 20,
-    color: '#0F172A',
-    fontWeight: 'bold',
-  },
-  modalGeneral: {
-    flex: 1,
-    backgroundColor: 'rgba(15, 23, 42, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  buttonClose: {
-    padding: 10,
-    alignContent: 'center',
-  },
-  modalSelect: {
-    backgroundColor: '#ffffff',
-    padding: 10,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  modalOptions: {
-    backgroundColor: '#ffffff',
-    alignItems: 'flex-start',
-    marginBottom: 25,
-  },
-  textSelect: {
-    alignSelf: 'center',
-    marginBottom: 20,
-    marginTop: 25,
-    color: '#64748B',
-    fontSize: 20,
-  },
-});
 
 export default MenuScreen;
