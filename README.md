@@ -1,6 +1,6 @@
 # Reto Nomada Software House
 
-¿No sabes como se llama un actor y solo cuentas con una foto de el?
+¿Desconoces el nombre de un actor y solo tienes una foto de el? Con esta aplicación podrás descubrir su nombre, en que películas ha participado e información de ellas solo subiendo una foto del actor
 
 Con esta App podrás subir una foto de un actor y te dara información acerca de las películas en las que ha tranajado, e informacion sobre las mismas.
 
