@@ -96,6 +96,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#0F172A',
     fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  divider: {
+    backgroundColor: '#F1F5F9',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    height: 7,
   },
   modalGeneral: {
     flex: 1,

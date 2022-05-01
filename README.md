@@ -1,1 +1,21 @@
-Para poder correr la aplicacion, primero es necesario seguir la guia de instalacion de react native en https://reactnative.dev/docs/environment-setup, hasta la parte de Running your React Native application, en esa parte ya podra correr el programa una vez lo clone del repositorio de github, entonces en la consola (si usa visual studio code con CTRL+ñ) puede ejecutar el comando npm run android para que ejecute el emulador y ya podra utilizar la aplicación. 
+# Reto Nomada Software House
+
+¿No sabes como se llama un actor y solo cuentas con una foto de el?
+
+Con esta App podrás subir una foto de un actor y te dara información acerca de las películas en las que ha tranajado, e informacion sobre las mismas.
+
+## Instalación
+
+Primero es necesario seguir la guia de instalacion de react native en https://reactnative.dev/docs/environment-setup, hasta la parte de Running your React Native application.  para que ejecute el emulador y ya podra utilizar la aplicación. 
+
+Clona este repositorio en tu ordenador local.
+
+Corre el comando:
+
+`npm run android`
+
+Se ejecutara la aplicación en un celular virtual (android/ios) y podras utilizarla sin problemas.
+
+## API
+
+Los datos de actores y peliculas fueron obtenidos de [The Movie DB](https://developers.themoviedb.org/3/search/search-people)

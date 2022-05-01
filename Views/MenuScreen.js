@@ -10,8 +10,8 @@ const MenuScreen = ({navigation}) => {
   const [viewGeneral, setViewGeneral] = React.useState(false);
   const [viewPicture, setViewPicture] = React.useState(false);
   const [state, setState] = React.useState('Subiendo...');
-  const [imageModal, setImageModal] = React.useState('');
   const [response, setResponse] = React.useState('Buscando...');
+  const [imageModal, setImageModal] = React.useState('');
   const [resultado, setResultado] = React.useState(null);
 
   let ButtonPersonal = (
@@ -43,6 +43,7 @@ const MenuScreen = ({navigation}) => {
       },
     };
     try {
+      //condicion para la eleecion de la imagen
       if (choice === 'camera') {
         const result = await launchCamera(options);
         const images = result.assets.map(item => item.uri);
@@ -54,14 +55,17 @@ const MenuScreen = ({navigation}) => {
         setImageModal(images[0]);
         setResultado(result);
       }
-      setViewGeneral(false);
-      setViewPicture(true);
+      setViewGeneral(false); //se esconde el modal de seleccion
+      setViewPicture(true); //se muestra el modal de subir imagen
     } catch (error) {
       console.log(error);
     }
   };
 
   React.useEffect(() => {
+    //Este Hook, se utiliza para hacer la llamada a la api/upload cada que resulatado cambie
+
+    //esta funcion manda la imagen de a la api tomada de la galeria
     const loadDataGalery = async () => {
       const formData = new FormData();
       if (
@@ -103,6 +107,7 @@ const MenuScreen = ({navigation}) => {
       }
     };
 
+    //esta funcion manda la imagen de a la api tomada con la camara
     const loadDataPicture = async () => {
       const formData = new FormData();
       if (
@@ -144,6 +149,8 @@ const MenuScreen = ({navigation}) => {
       }
     };
 
+    //findMovies se utiliza para hacer la navegacion dependiendp si se tomo la imagen de la
+    //galeria o con la camara
     const findMovies = name => {
       if (resultado.assets !== undefined) {
         navigation.navigate('Actor', {uri: resultado.assets[0].uri, name});
@@ -183,6 +190,11 @@ const MenuScreen = ({navigation}) => {
       <Modal animationType="slide" transparent={true} visible={viewGeneral}>
         <View style={styles.modalGeneral}>
           <View style={styles.modalSelect}>
+            <TouchableOpacity onPress={() => setViewGeneral(false)}>
+              <View style={styles.divider}>
+                <Text>---------------------</Text>
+              </View>
+            </TouchableOpacity>
             <Text style={styles.textSelect}>selecciona una foto</Text>
             <View style={styles.modalOptions}>
               <TouchableOpacity
@@ -218,6 +230,16 @@ const MenuScreen = ({navigation}) => {
         visible={viewPicture}>
         <View style={styles.modalGeneral}>
           <View style={styles.modalSelect}>
+            <TouchableOpacity
+              onPress={() => {
+                setViewPicture(false);
+                setState('Subiendo...');
+                setResponse('Buscando...');
+              }}>
+              <View style={styles.divider}>
+                <Text>---------------------</Text>
+              </View>
+            </TouchableOpacity>
             <Text style={styles.textSelect}>{state}</Text>
             <Image source={{uri: imageModal}} style={styles.image} />
             <View style={styles.viewSearch}>
