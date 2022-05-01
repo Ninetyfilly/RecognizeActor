@@ -4,7 +4,7 @@
 
 Con esta App podrás subir una foto de un actor y te dara información acerca de las películas en las que ha tranajado, e informacion sobre las mismas.
 
-## Instalación
+## Guia de Instalación
 
 Primero es necesario seguir la guia de instalacion de react native en https://reactnative.dev/docs/environment-setup, hasta la parte de Running your React Native application.  para que ejecute el emulador y ya podra utilizar la aplicación. 
 
